@@ -1,0 +1,143 @@
+#===========POST自动生成文档======================
+POST my_index/_doc
+{
+  "user":"mike1",
+  "comment":"you know"
+}
+
+#===========PUT-Create生成文档======================
+#指定id 创建一个文档
+#PUT-Create 索引/动作/文档id
+#当id为3的文档存在创建将失败
+
+#写法1:
+PUT my_index1/_create/3
+{
+  "user":"mike",
+  "comment":"you know"
+}
+
+#写法2:
+PUT my_index1/_doc/3?op_type=create
+{
+  "user":"mike",
+  "comment":"you know"
+}
+
+#===========PUT-Index生成文档=======================
+#注意区分Index Vs Create Vs Update
+#如果3号文档不存在则创建
+#如果3号文档存在,则删除3号文档,新创建文档并且版本加1
+
+#第1执行，返回的结果是created
+PUT my_index1/_doc/5
+{
+  "tags":["aaa", "bbb"]
+}
+
+#第2执行，返回的结果是updated
+PUT my_index1/_doc/5
+{
+  "tags":["aaa", "bbb"]
+}
+
+#===========GET获取文档==============================
+GET my_index
+
+GET my_index1
+
+#get a document
+# /index/type/document_id
+GET my_index1/_doc/3
+
+#===========POST-Update文档=========================
+#Update不会删除数据
+#注意要知名doc
+POST my_index1/_update/3
+{
+  "doc":{
+    "alums":["A1", "A2"]
+  }
+}
+
+#===========DELETE文档==============================
+DELETE my_index1/_doc/3
+
+#==================================================
+#==================================================
+#==================================================
+
+#===========BULK==============================
+#1.一次请求中可对多个index进行4种类型的操作
+#index, create, update, delete
+#2.如果多个请求中有一个失败，其他请求不受影响
+#每个请求的结果都会回显
+
+#测试1:bluk中只有一个index方法
+POST _bulk
+{"index":{"_index":"test", "_id":"1"}}
+{"field1":"value1"}
+
+GET test/_doc/1
+
+POST _bulk
+{"index":{"_index":"test", "_id":"3"}}
+{"field1":"value1"}
+{"delete":{"_index":"test", "_id":"2"}}
+{"create":{"_index":"test2", "_id":"3"}}
+{"field1":"value3"}
+{"update":{"_id":"1", "_index":"test"}}
+{"doc":{"field2":"value2"}}
+
+#===========mget==============================
+PUT user/_doc/1
+{
+  "name":"ybx"
+}
+
+GET _mget
+{
+  "docs":[
+    {
+      "_index":"user",
+      "_id":1
+    },
+    {
+      "_index":"comment",
+      "_id":1
+    }
+  ]
+}
+#===========msearch==============================
+#1.msearch的格式
+
+#POST test/_msearch
+#REQUEST-HEADER1
+#REQUEST-BODY1
+#REQUEST-HEADER2
+#REQUEST-BODY2
+POST test/_msearch
+{}
+{"query":{"match_all" : {}},"from":0, "size":1}
+{}
+{"query":{"match_all" : {}}}
+
+
+#第1个请求是从kibana_sample_data_ecommerce中只获取1条
+#第2个请求是从kibana_sample_data_ecommerce中只获取2条
+POST kibana_sample_data_ecommerce/_msearch
+{}
+{"query":{"match_all":{}}, "size":1}
+{"index":"kibana_sample_data_flights"}
+{"query":{"match_all":{}}, "size":2}
+
+GET mqbeat_config_190827/_msearch
+{}
+{"query":{"match_all":{}}}
+
+GET mqbeat_config/_mappings
+
+
+
+
+

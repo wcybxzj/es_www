@@ -1,0 +1,34 @@
+GET _search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+
+#看电商表Index的Mapping和Setting
+GET kibana_sample_data_ecommerce
+
+#看电商表Index的数据总量
+GET kibana_sample_data_ecommerce/_count
+
+#查索引是的概况
+GET /_cat/indices/kibana_*
+GET /_cat/indices/kibana_*?v
+
+#only show green indices
+GET /_cat/indices?v&health=green
+
+#show indecies order by document num
+GET /_cat/indices?v&s=docs.count:desc
+
+#show specific column in index
+GET /_cat/indices/kibana*?v&h=index,store.size
+
+#how much mem is used per index?
+GET /_cat/indices/kibana*?v&h=i,tm&s=tm:desc
+
+GET _cluster/health
+GET _cat/nodes?v
+GET _cat/shards?v
+
