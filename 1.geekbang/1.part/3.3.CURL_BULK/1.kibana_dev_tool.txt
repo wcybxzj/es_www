@@ -43,8 +43,10 @@ PUT my_index1/_doc/5
 
 #===========GET获取文档==============================
 GET my_index
+GET my_index/_search
 
 GET my_index1
+GET my_index1/_search
 
 #get a document
 # /index/type/document_id
